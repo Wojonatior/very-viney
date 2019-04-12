@@ -2,7 +2,7 @@ var canvas = document.querySelector('canvas');
 var context = canvas.getContext('2d');
 
 const DPR = window.devicePixelRatio || 1;
-const SIZE = window.innerWidth * .33;
+const SIZE = window.innerWidth * .4;
 const MARGIN = SIZE / 20;
 const STEP = SIZE / 20;
 
@@ -13,7 +13,7 @@ context.lineWidth = 0;
 
 const startingWidth = canvas.width - MARGIN;
 const startingHeight = canvas.height - MARGIN;
-const MIN_AREA = startingWidth * startingHeight * .01;
+const MIN_AREA = startingWidth * startingHeight * .04;
 
 
 const getFillStyle = (count) => {
@@ -21,8 +21,9 @@ const getFillStyle = (count) => {
 }
 
 const getNextDimension = (currentDimension) => {
-  const randomMult = Math.random() / 2 + .75;
-  return currentDimension - (STEP * randomMult);
+  const multipliers = [1, 2, 4];
+  const index = Math.floor(Math.random() * 3);
+  return currentDimension - (STEP * multipliers[index]);
 }
 
 const drawAndShrink = (currentWidth, currentHeight, count) => {

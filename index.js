@@ -11,6 +11,8 @@ canvas.height = SIZE * DPR;
 context.scale(DPR, DPR);
 context.lineWidth = 2;
 
+const rotateDegrees = (context, degrees) => context.rotate(degrees * Math.PI/180);
+
 const getGradient = (x1, y1, x2, y2) => {
   const grd = context.createLinearGradient(x1, y1, x2, y2);
   const modifierLeft = Math.random() * .3;
@@ -33,7 +35,7 @@ const drawGradientLine = (x1, y1, x2, y2) => {
 const rotateAndDraw = (degrees, drawFn) => {
   const yIncrement = -1;
   context.translate(0, yIncrement);
-  context.rotate(degrees * Math.PI/180);
+  rotateDegrees(context, degrees);
   drawFn();
 }
 
@@ -44,8 +46,8 @@ const drawBranch = (xStart, yStart, startWidth, length, depth) => {
   let rotationAmount = 0;
   let scaledWidth = startWidth;
 
-  for(y=yStart; y > yStart - length; y -= 1){
-    const percentageDone = 1 + ((y - yStart) / (length - yStart));
+  for(y=0; y < length; y += 1){
+    const percentageDone = y/length;
     scaledWidth = startWidth - (deltaWidth * percentageDone);
     rotationAmount += (Math.random() * 2 - 1) * .25;
     rotationAmount = Math.max(rotationAmount, -30);
@@ -55,12 +57,14 @@ const drawBranch = (xStart, yStart, startWidth, length, depth) => {
     });
   }
 
-  if(depth < 1){
+  if(depth <= 1){
     context.save();
-    drawBranch(scaledWidth/4, 0, scaledWidth/2, 75, depth+1);
+    rotateDegrees(context, Math.random() * 10 - 5)
+    drawBranch(scaledWidth/4, 10, scaledWidth/2, 75, depth+1);
     context.restore();
     context.save();
-    drawBranch(-scaledWidth/4, 0, scaledWidth/2, 75, depth+1);
+    context.rotate(context, Math.random() * 30 - 15)
+    drawBranch(-scaledWidth/4,10, scaledWidth/2, 75, depth+1);
     context.restore();
   }
 }

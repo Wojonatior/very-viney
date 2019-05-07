@@ -11,38 +11,51 @@ canvas.height = SIZE * DPR;
 context.scale(DPR, DPR);
 context.lineWidth = 0;
 
-const startingWidth = canvas.width - MARGIN;
-const startingHeight = canvas.height - MARGIN;
-const MIN_AREA = startingWidth * startingHeight * .04;
-
-
-const getFillStyle = (count) => {
-  return count % 2 == 0 ? '#5C9EAD' : '#EEEEEE';
+const getGradient = (x1, y1, x2, y2) => {
+  const grd = context.createLinearGradient(x1, y1, x2, y2);
+  const modifierLeft = Math.random() * .3;
+  const modifierRight = Math.random() * .3;
+  grd.addColorStop(0, "black");
+  grd.addColorStop(.2 + modifierLeft, "white");
+  grd.addColorStop(.8 - modifierRight, "white");
+  grd.addColorStop(1, "black");
+  return grd;
 }
 
-const getNextDimension = (currentDimension) => {
-  const multipliers = [1, 2, 4];
-  const index = Math.floor(Math.random() * 3);
-  return currentDimension - (STEP * multipliers[index]);
+const drawGradientLine = (x1, y1, x2, y2) => {
+  context.beginPath();
+  context.strokeStyle = getGradient(x1, y1, x2, y2);
+  context.moveTo(x1,y1);
+  context.lineTo(x2,y2);
+  context.stroke();
 }
 
-const drawAndShrink = (currentWidth, currentHeight, count) => {
-  var nextWidth, nextHeight;
-  const currentArea = currentWidth * currentHeight;
+const rotateAndDraw = (center_x, center_y, degrees, drawFn) => {
+  context.save();
+  context.translate(center_x, center_y);
+  context.rotate(degrees * Math.PI/180);
+  drawFn();
+  context.restore();
+}
 
-  context.fillStyle = getFillStyle(count);
-  context.fillRect(MARGIN, MARGIN, currentWidth, currentHeight);
-
-  if (currentArea > MIN_AREA) {
-    if (Math.random() > .5){
-      nextWidth = getNextDimension(currentWidth);
-      nextHeight = currentHeight;
+const drawBranch = (xStart, yStart, startWidth, length) => {
+  const finalWidth = startWidth * (1 - ((Math.random() * .25) + .3));
+  const deltaWidth = startWidth - finalWidth;
+  let rotationAmount = 0;
+  for(y=yStart; y > yStart - length; y -= 1){
+    const percentageDone = 1 + ((y - yStart) / (length - yStart));
+    const scaledWidth = startWidth - (deltaWidth * percentageDone);
+    rotationAmount += Math.random() * 2 - 1;
+    if(rotationAmount <= 0) {
+      rotateAndDraw(xStart-scaledWidth/2, y, rotationAmount, () => {
+        drawGradientLine(0, 0, scaledWidth, 0);
+      })
     } else {
-      nextWidth = currentWidth;
-      nextHeight = getNextDimension(currentHeight);
+      rotateAndDraw(xStart+scaledWidth/2, y, rotationAmount, () => {
+        drawGradientLine(0-scaledWidth, 0, 0, 0);
+      })
     }
-    drawAndShrink(nextWidth, nextHeight, count + 1);
   }
-};
+}
 
-drawAndShrink(startingWidth, startingHeight, 0);
+drawBranch(SIZE/2, SIZE-MARGIN, 40, 200);

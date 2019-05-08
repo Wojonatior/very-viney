@@ -39,34 +39,65 @@ const rotateAndDraw = (degrees, drawFn) => {
   drawFn();
 }
 
-const drawBranch = (xStart, yStart, startWidth, length, depth) => {
+const decideToBranch = (width) => {
+  console.log(width);
+  return width > 2;
+}
+
+const drawBranch = (xStart, yStart, startWidth, length) => {
+  console.log(xStart, 'xStart');
+  console.log(yStart, 'yStart');
+  console.log(startWidth, 'startWidth');
+  console.log(length, 'length');
   context.translate(xStart,yStart);
-  const finalWidth = startWidth * (1 - ((Math.random() * .25) + .3));
-  const deltaWidth = startWidth - finalWidth;
   let rotationAmount = 0;
-  let scaledWidth = startWidth;
+  let currentWidth = startWidth;
 
   for(y=0; y < length; y += 1){
-    const percentageDone = y/length;
-    scaledWidth = startWidth - (deltaWidth * percentageDone);
-    rotationAmount += (Math.random() * 2 - 1) * .25;
-    rotationAmount = Math.max(rotationAmount, -30);
-    rotationAmount = Math.min(rotationAmount, +30);
+    if(y/length == .25 || y/length == .5 || y/length == .75){
+      if(Math.random() > .8){
+        context.save();
+        rotateDegrees(context, Math.random() * 30 + 15)
+        drawBranch(
+          currentWidth * (Math.random() * .3 + .2),
+          10,
+          currentWidth*.66,
+          length
+        );
+        context.restore();
+      }
+      if(Math.random() > .8){
+        context.save();
+        const degrees = Math.random() * 30 - 45;
+        rotateDegrees(context, degrees);
+        drawBranch(
+          currentWidth * (Math.random() * .3 + .5),
+          10,
+          currentWidth*.66,
+          length
+        );
+        context.restore();
+      }
+    }
+    currentWidth -= Math.random() / 6;
+    rotationAmount += (Math.random() * 3 - 1.5);
+    rotationAmount = Math.max(rotationAmount, -1.5);
+    rotationAmount = Math.min(rotationAmount, +1.5);
     rotateAndDraw(rotationAmount, () => {
-      drawGradientLine(scaledWidth/-2, 0, scaledWidth/2, 0);
+      drawGradientLine(currentWidth/-2, 0, currentWidth/2, 0);
     });
   }
 
-  if(depth <= 1){
-    context.save();
-    rotateDegrees(context, Math.random() * 10 - 5)
-    drawBranch(scaledWidth/4, 10, scaledWidth/2, 75, depth+1);
-    context.restore();
-    context.save();
-    context.rotate(context, Math.random() * 30 - 15)
-    drawBranch(-scaledWidth/4,10, scaledWidth/2, 75, depth+1);
-    context.restore();
-  }
+  // if(decideToBranch(currentWidth)){
+  //   context.save();
+  //   rotateDegrees(context, Math.random() * 30 - 15)
+  //   drawBranch(currentWidth/4, 10, currentWidth/2, 75);
+  //   context.restore();
+  //   context.save();
+  //   context.rotate(context, Math.random() * 30 - 15)
+  //   drawBranch(-currentWidth/4,10, currentWidth/2, 75);
+  //   context.restore();
+  // }
 }
 
-drawBranch(SIZE/2, SIZE-MARGIN, 40, 150, 0);
+drawBranch(SIZE/2, SIZE-MARGIN, 60, 120);

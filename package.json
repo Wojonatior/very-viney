@@ -1,0 +1,8 @@
+{
+  "name": "@wojonatior/veryViney",
+  "version": "1.0.0",
+  "description": "A react component that makes a very viney square",
+  "license": "MIT",
+  "repository": "wojonatior/veryViney",
+  "main": "index.js"
+}

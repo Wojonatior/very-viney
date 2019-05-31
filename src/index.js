@@ -2,8 +2,13 @@ import React, { Component } from "react";
 
 class VeryViney extends Component {
 
+  constructor(props) {
+    super(props);
+    this.canvasRef = React.createRef();
+  }
+
   componentDidMount() {
-    const canvas = this.refs.vineyCanvas;
+    const canvas = this.canvasRef.current;
     const context = canvas.getContext("2d");
     this.draw(canvas, context);
   }
@@ -107,11 +112,12 @@ class VeryViney extends Component {
   render() {
     return (
       <div style={this.getContainerStyles()}>
-        <canvas ref="vineyCanvas" id="canvas"></canvas>
+        <canvas ref={this.canvasRef} id="canvas"></canvas>
       </div>
     );
   }
 }
 
-export default VeryViney
+
+export default VeryViney;
 

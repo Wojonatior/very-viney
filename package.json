@@ -1,5 +1,5 @@
 {
-  "name": "@wojonatior/veryViney",
+  "name": "@wojonatior/very-viney",
   "author": {
     "name": "Jarek Wojciechowski",
     "email": "jarekwojo@gmail.com"
@@ -7,7 +7,7 @@
   "version": "0.2.0",
   "description": "A react component that makes a very viney square",
   "license": "MIT",
-  "repository": "wojonatior/veryViney",
+  "repository": "wojonatior/very-viney",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack --watch",
